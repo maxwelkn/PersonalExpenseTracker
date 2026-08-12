@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+
+# .NET build files
+bin/
+obj/
+
+# User-specific Visual Studio files
+*.user
+*.suo
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+.env
+.env.*
+secrets.json
+
+# AI development files - local only
+.agents/
+.skills/
