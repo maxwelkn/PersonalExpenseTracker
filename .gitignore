@@ -21,3 +21,4 @@ secrets.json
 # AI development files - local only
 .agents/
 .skills/
+.rules/
