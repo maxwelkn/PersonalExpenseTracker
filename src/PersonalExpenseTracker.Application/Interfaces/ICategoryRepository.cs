@@ -1,13 +1,14 @@
 using PersonalExpenseTracker.Domain.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PersonalExpenseTracker.Application.Interfaces;
 
 public interface ICategoryRepository
 {
-    Category? GetById(int id);
-    IEnumerable<Category> GetAllByUserId(int userId);
-    void Add(Category category);
-    void Update(Category category);
-    void Delete(int id);
+    Task<Category?> GetByIdAsync(int id);
+    Task<IEnumerable<Category>> GetAllByUserIdAsync(int userId);
+    Task AddAsync(Category category);
+    Task UpdateAsync(Category category);
+    Task DeleteAsync(int id);
 }
