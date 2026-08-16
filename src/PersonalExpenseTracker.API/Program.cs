@@ -1,9 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using PersonalExpenseTracker.Application.Interfaces;
+using PersonalExpenseTracker.Infrastructure.Persistence;
+using PersonalExpenseTracker.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
