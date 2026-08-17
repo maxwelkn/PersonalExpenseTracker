@@ -4,6 +4,8 @@ using PersonalExpenseTracker.Infrastructure.Persistence;
 using PersonalExpenseTracker.Infrastructure.Repositories;
 using PersonalExpenseTracker.Application.Services;
 using PersonalExpenseTracker.API.ExceptionHandling;
+using Microsoft.AspNetCore.Identity;
+using PersonalExpenseTracker.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddControllers();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
