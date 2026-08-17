@@ -6,4 +6,5 @@ public class Category
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
     public int UserId { get; set; }
+    public User User { get; set; } = null!;
 }
