@@ -3,6 +3,7 @@ using PersonalExpenseTracker.Application.Interfaces;
 using PersonalExpenseTracker.Infrastructure.Persistence;
 using PersonalExpenseTracker.Infrastructure.Repositories;
 using PersonalExpenseTracker.Application.Services;
+using PersonalExpenseTracker.API.ExceptionHandling;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,14 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddControllers();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
