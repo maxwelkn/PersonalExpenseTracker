@@ -44,5 +44,34 @@ namespace PersonalExpenseTracker.Application.Services
                 IsActive = category.IsActive
             };
         }
+
+        public async Task<IEnumerable<CategoryResponseDto>> GetAllCategoriesAsync(int userId)
+        {
+            var categories = await _categoryRepository.GetAllByUserIdAsync(userId);
+            
+            return categories.Select(c => new CategoryResponseDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                IsActive = c.IsActive
+            });
+        }
+
+        public async Task<CategoryResponseDto?> GetCategoryByIdAsync(int id, int userId)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category == null || category.UserId != userId)
+            {
+                return null;
+            }
+
+            return new CategoryResponseDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                IsActive = category.IsActive
+            };
+        }
     }
 }
