@@ -21,5 +21,12 @@ namespace PersonalExpenseTracker.API.Controllers
             var result = await _authService.RegisterAsync(dto);
             return StatusCode(StatusCodes.Status201Created, result);
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            var result = await _authService.LoginAsync(dto);
+            return Ok(result);
+        }
     }
 }

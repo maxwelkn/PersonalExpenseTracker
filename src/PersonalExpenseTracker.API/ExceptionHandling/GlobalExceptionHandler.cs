@@ -31,6 +31,11 @@ namespace PersonalExpenseTracker.API.ExceptionHandling
                     problemDetails.Title = "Conflict";
                     problemDetails.Detail = invalidOperationException.Message;
                     break;
+                case UnauthorizedAccessException unauthorizedAccessException:
+                    problemDetails.Status = StatusCodes.Status401Unauthorized;
+                    problemDetails.Title = "Unauthorized";
+                    problemDetails.Detail = unauthorizedAccessException.Message;
+                    break;
                 default:
                     _logger.LogError(exception, "Ha ocurrido un error inesperado.");
                     problemDetails.Status = StatusCodes.Status500InternalServerError;

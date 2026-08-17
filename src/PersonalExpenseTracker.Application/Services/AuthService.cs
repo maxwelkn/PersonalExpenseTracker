@@ -51,5 +51,31 @@ namespace PersonalExpenseTracker.Application.Services
                 Email = user.Email
             };
         }
+
+        public async Task<UserResponseDto> LoginAsync(LoginDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                throw new ArgumentException("El email no puede estar vacío.", nameof(dto.Email));
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                throw new ArgumentException("La contraseña no puede estar vacía.", nameof(dto.Password));
+
+            var normalizedEmail = dto.Email.Trim();
+
+            var user = await _userRepository.GetByEmailAsync(normalizedEmail);
+            if (user == null)
+                throw new UnauthorizedAccessException("Email o contraseña incorrectos.");
+
+            var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+            if (verificationResult == PasswordVerificationResult.Failed)
+                throw new UnauthorizedAccessException("Email o contraseña incorrectos.");
+
+            return new UserResponseDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
+        }
     }
 }
