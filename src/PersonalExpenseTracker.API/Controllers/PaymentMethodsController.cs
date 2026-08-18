@@ -67,5 +67,18 @@ namespace PersonalExpenseTracker.API.Controllers
 
             return Ok(updatedPaymentMethod);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePaymentMethod(int id)
+        {
+            var deleted = await _paymentMethodService.DeletePaymentMethodAsync(id, GetUserId());
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }
