@@ -67,5 +67,18 @@ namespace PersonalExpenseTracker.API.Controllers
 
             return Ok(updatedExpense);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteExpense(int id)
+        {
+            var deleted = await _expenseService.DeleteExpenseAsync(id, GetUserId());
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }

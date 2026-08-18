@@ -150,5 +150,18 @@ namespace PersonalExpenseTracker.Application.Services
                 PaymentMethodId = expense.PaymentMethodId
             };
         }
+
+        public async Task<bool> DeleteExpenseAsync(int id, int userId)
+        {
+            var expense = await _expenseRepository.GetByIdAsync(id);
+
+            if (expense == null || expense.UserId != userId)
+            {
+                return false;
+            }
+
+            await _expenseRepository.DeleteAsync(id);
+            return true;
+        }
     }
 }
