@@ -82,5 +82,18 @@ namespace PersonalExpenseTracker.API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{id}/progress")]
+        public async Task<IActionResult> GetBudgetProgress(int id)
+        {
+            var progress = await _budgetService.GetBudgetProgressAsync(id, GetUserId());
+
+            if (progress == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(progress);
+        }
     }
 }
