@@ -67,5 +67,18 @@ namespace PersonalExpenseTracker.API.Controllers
 
             return Ok(updatedCategory);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var deleted = await _categoryService.DeleteCategoryAsync(id, GetUserId());
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }

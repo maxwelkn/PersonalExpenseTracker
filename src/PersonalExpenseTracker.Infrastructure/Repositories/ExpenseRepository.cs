@@ -50,4 +50,9 @@ public class ExpenseRepository : IExpenseRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> HasExpensesByCategoryIdAsync(int categoryId)
+    {
+        return await _context.Expenses.AnyAsync(e => e.CategoryId == categoryId);
+    }
 }
