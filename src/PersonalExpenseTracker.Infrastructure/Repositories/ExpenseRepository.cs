@@ -31,7 +31,13 @@ public class ExpenseRepository : IExpenseRepository
 
     public async Task AddAsync(Expense expense)
     {
-        _context.Expenses.Add(expense);
+        await _context.Expenses.AddAsync(expense);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(IEnumerable<Expense> expenses)
+    {
+        await _context.Expenses.AddRangeAsync(expenses);
         await _context.SaveChangesAsync();
     }
 
