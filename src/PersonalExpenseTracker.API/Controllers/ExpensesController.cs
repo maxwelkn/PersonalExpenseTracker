@@ -1,0 +1,71 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PersonalExpenseTracker.Application.DTOs.Expense;
+using PersonalExpenseTracker.Application.Services;
+using System.Security.Claims;
+
+namespace PersonalExpenseTracker.API.Controllers
+{
+    [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ExpensesController : ControllerBase
+    {
+        private readonly ExpenseService _expenseService;
+
+        public ExpensesController(ExpenseService expenseService)
+        {
+            _expenseService = expenseService;
+        }
+
+        private int GetUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                throw new UnauthorizedAccessException("El token no contiene un identificador de usuario válido.");
+            }
+            return userId;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateExpense([FromBody] CreateExpenseDto dto)
+        {
+            var createdExpense = await _expenseService.CreateExpenseAsync(dto, GetUserId());
+            return CreatedAtAction(nameof(GetExpenseById), new { id = createdExpense.Id }, createdExpense);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllExpenses()
+        {
+            var expenses = await _expenseService.GetAllExpensesAsync(GetUserId());
+            return Ok(expenses);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetExpenseById(int id)
+        {
+            var expense = await _expenseService.GetExpenseByIdAsync(id, GetUserId());
+
+            if (expense == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(expense);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateExpense(int id, [FromBody] UpdateExpenseDto dto)
+        {
+            var updatedExpense = await _expenseService.UpdateExpenseAsync(id, dto, GetUserId());
+
+            if (updatedExpense == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedExpense);
+        }
+    }
+}
