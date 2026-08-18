@@ -25,8 +25,6 @@ export const Budgets = () => {
     setLoading(true);
     try {
       const [budgetsRes, categoriesRes] = await Promise.all([
-        apiClient.get(`/budgets?month=${month}&year=${year}`), // Assuming the endpoint might filter, or we fetch all and filter in frontend. Wait, backend says we have CRUD and Budget Progress. Let's fetch the progress for all budgets of the user. Actually, backend doesn't have a GET /api/budgets/progress endpoint without ID? Wait, the instruction says GET /api/budgets/{id}/progress.
-        // Wait, how to get all budgets? GET /api/budgets
         apiClient.get('/budgets'),
         apiClient.get('/categories')
       ]);
