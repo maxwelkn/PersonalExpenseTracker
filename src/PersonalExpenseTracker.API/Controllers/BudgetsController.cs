@@ -44,6 +44,13 @@ namespace PersonalExpenseTracker.API.Controllers
             return Ok(budgets);
         }
 
+        [HttpGet("exceeded")]
+        public async Task<IActionResult> GetExceededBudgets([FromQuery] int month, [FromQuery] int year)
+        {
+            var exceededBudgets = await _budgetService.GetExceededBudgetsAsync(GetUserId(), month, year);
+            return Ok(exceededBudgets);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBudgetById(int id)
         {

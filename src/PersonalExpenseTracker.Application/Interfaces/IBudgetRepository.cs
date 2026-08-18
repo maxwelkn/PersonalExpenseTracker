@@ -9,6 +9,7 @@ public interface IBudgetRepository
     Task<Budget?> GetByIdAsync(int id);
     Task<IEnumerable<Budget>> GetAllByUserIdAsync(int userId);
     Task<Budget?> GetByUserCategoryPeriodAsync(int userId, int categoryId, int year, int month);
+    Task<IEnumerable<Budget>> GetAllByUserPeriodAsync(int userId, int year, int month);
     Task AddAsync(Budget budget);
     Task UpdateAsync(Budget budget);
     Task DeleteAsync(int id);

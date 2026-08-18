@@ -35,6 +35,13 @@ public class BudgetRepository : IBudgetRepository
             .FirstOrDefaultAsync(b => b.UserId == userId && b.CategoryId == categoryId && b.Year == year && b.Month == month);
     }
 
+    public async Task<IEnumerable<Budget>> GetAllByUserPeriodAsync(int userId, int year, int month)
+    {
+        return await _context.Budgets
+            .Where(b => b.UserId == userId && b.Year == year && b.Month == month)
+            .ToListAsync();
+    }
+
     public async Task AddAsync(Budget budget)
     {
         await _context.Budgets.AddAsync(budget);

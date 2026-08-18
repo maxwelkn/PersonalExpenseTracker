@@ -152,6 +152,56 @@ public class BudgetService
         };
     }
 
+    public async Task<IEnumerable<ExceededBudgetDto>> GetExceededBudgetsAsync(int userId, int month, int year)
+    {
+        if (month < 1 || month > 12)
+        {
+            throw new ArgumentException("El mes debe estar entre 1 y 12.");
+        }
+
+        if (year < 1 || year > 9999)
+        {
+            throw new ArgumentException("El año debe estar entre 1 y 9999.");
+        }
+
+        var budgets = await _budgetRepository.GetAllByUserPeriodAsync(userId, year, month);
+        if (!budgets.Any())
+        {
+            return Enumerable.Empty<ExceededBudgetDto>();
+        }
+
+        var categories = await _categoryRepository.GetAllByUserIdAsync(userId);
+        var categoryMap = categories.ToDictionary(c => c.Id, c => c.Name);
+
+        var expenseTotals = await _expenseRepository.GetTotalsByUserPeriodGroupedByCategoryAsync(userId, year, month);
+        var expenseMap = expenseTotals.ToDictionary(e => e.CategoryId, e => e.TotalAmount);
+
+        var exceededBudgets = new List<ExceededBudgetDto>();
+
+        foreach (var budget in budgets)
+        {
+            decimal spentAmount = expenseMap.TryGetValue(budget.CategoryId, out var total) ? total : 0m;
+
+            if (spentAmount > budget.Amount)
+            {
+                exceededBudgets.Add(new ExceededBudgetDto
+                {
+                    BudgetId = budget.Id,
+                    CategoryId = budget.CategoryId,
+                    CategoryName = categoryMap.TryGetValue(budget.CategoryId, out var name) ? name : "Unknown",
+                    BudgetAmount = budget.Amount,
+                    SpentAmount = spentAmount,
+                    ExceededAmount = spentAmount - budget.Amount,
+                    PercentageConsumed = Math.Round((spentAmount / budget.Amount) * 100m, 2),
+                    Month = budget.Month,
+                    Year = budget.Year
+                });
+            }
+        }
+
+        return exceededBudgets;
+    }
+
     private void ValidateBudgetRules(decimal amount, int month, int year)
     {
         if (amount <= 0)
