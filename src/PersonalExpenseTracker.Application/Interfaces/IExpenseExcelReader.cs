@@ -7,6 +7,6 @@ namespace PersonalExpenseTracker.Application.Interfaces
 {
     public interface IExpenseExcelReader
     {
-        Task<IEnumerable<ExpenseImportRowDto>> ReadExpensesAsync(Stream fileStream);
+        IEnumerable<ExpenseImportRowDto> ReadExpenses(Stream fileStream);
     }
 }
