@@ -7,10 +7,12 @@ namespace PersonalExpenseTracker.Application.Services
     public class CategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IExpenseRepository _expenseRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository, IExpenseRepository expenseRepository)
         {
             _categoryRepository = categoryRepository;
+            _expenseRepository = expenseRepository;
         }
 
         public async Task<CategoryResponseDto> CreateCategoryAsync(CreateCategoryDto dto, int userId)
@@ -107,6 +109,24 @@ namespace PersonalExpenseTracker.Application.Services
                 Name = category.Name,
                 IsActive = category.IsActive
             };
+        }
+
+        public async Task<bool> DeleteCategoryAsync(int id, int userId)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category == null || category.UserId != userId)
+            {
+                return false;
+            }
+
+            if (await _expenseRepository.HasExpensesByCategoryIdAsync(id))
+            {
+                throw new InvalidOperationException("La categoría no puede eliminarse mientras tenga gastos asociados.");
+            }
+
+            await _categoryRepository.DeleteAsync(id);
+            return true;
         }
     }
 }
