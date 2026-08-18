@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalExpenseTracker.Application.DTOs.Auth;
 using PersonalExpenseTracker.Application.Services;

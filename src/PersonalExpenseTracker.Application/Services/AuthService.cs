@@ -9,11 +9,13 @@ namespace PersonalExpenseTracker.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-        public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher)
+        public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher, IJwtTokenGenerator jwtTokenGenerator)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
         public async Task<UserResponseDto> RegisterAsync(RegisterUserDto dto)
@@ -52,7 +54,7 @@ namespace PersonalExpenseTracker.Application.Services
             };
         }
 
-        public async Task<UserResponseDto> LoginAsync(LoginDto dto)
+        public async Task<LoginResponseDto> LoginAsync(LoginDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email))
                 throw new ArgumentException("El email no puede estar vacío.", nameof(dto.Email));
@@ -70,11 +72,17 @@ namespace PersonalExpenseTracker.Application.Services
             if (verificationResult == PasswordVerificationResult.Failed)
                 throw new UnauthorizedAccessException("Email o contraseña incorrectos.");
 
-            return new UserResponseDto
+            var token = _jwtTokenGenerator.GenerateToken(user);
+
+            return new LoginResponseDto
             {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email
+                User = new UserResponseDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email
+                },
+                Token = token
             };
         }
     }
