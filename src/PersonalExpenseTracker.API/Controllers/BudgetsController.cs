@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using PersonalExpenseTracker.Application.DTOs;
+using PersonalExpenseTracker.Application.DTOs.Budget;
 using PersonalExpenseTracker.Application.Services;
 using System;
 using System.Threading.Tasks;

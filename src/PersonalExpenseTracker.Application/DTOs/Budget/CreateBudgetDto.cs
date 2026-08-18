@@ -1,4 +1,4 @@
-namespace PersonalExpenseTracker.Application.DTOs;
+namespace PersonalExpenseTracker.Application.DTOs.Budget;
 
 public class CreateBudgetDto
 {

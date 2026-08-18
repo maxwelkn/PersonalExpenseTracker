@@ -1,4 +1,4 @@
-using PersonalExpenseTracker.Application.DTOs;
+using PersonalExpenseTracker.Application.DTOs.Budget;
 using PersonalExpenseTracker.Application.Interfaces;
 using PersonalExpenseTracker.Domain.Entities;
 using System;
@@ -12,11 +12,13 @@ public class BudgetService
 {
     private readonly IBudgetRepository _budgetRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IExpenseRepository _expenseRepository;
 
-    public BudgetService(IBudgetRepository budgetRepository, ICategoryRepository categoryRepository)
+    public BudgetService(IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IExpenseRepository expenseRepository)
     {
         _budgetRepository = budgetRepository;
         _categoryRepository = categoryRepository;
+        _expenseRepository = expenseRepository;
     }
 
     public async Task<BudgetResponseDto> CreateBudgetAsync(CreateBudgetDto dto, int userId)
@@ -100,6 +102,56 @@ public class BudgetService
         return true;
     }
 
+    public async Task<BudgetProgressDto?> GetBudgetProgressAsync(int id, int userId)
+    {
+        var budget = await _budgetRepository.GetByIdAsync(id);
+        if (budget == null || budget.UserId != userId)
+        {
+            return null;
+        }
+
+        decimal spentAmount = await _expenseRepository.GetTotalByUserCategoryPeriodAsync(
+            userId,
+            budget.CategoryId,
+            budget.Year,
+            budget.Month);
+
+        decimal remainingAmount = budget.Amount - spentAmount;
+        
+        // Round to 2 decimal places as per the rule: "Puedes redondear PercentageConsumed a 2 decimales"
+        decimal percentageConsumed = Math.Round((spentAmount / budget.Amount) * 100m, 2);
+        
+        int alertThreshold = 0;
+        if (spentAmount >= budget.Amount)
+        {
+            alertThreshold = 100;
+        }
+        else if (spentAmount * 100m >= budget.Amount * 80m)
+        {
+            alertThreshold = 80;
+        }
+        else if (spentAmount * 100m >= budget.Amount * 50m)
+        {
+            alertThreshold = 50;
+        }
+
+        bool isExceeded = spentAmount > budget.Amount;
+
+        return new BudgetProgressDto
+        {
+            Id = budget.Id,
+            Amount = budget.Amount,
+            Month = budget.Month,
+            Year = budget.Year,
+            CategoryId = budget.CategoryId,
+            SpentAmount = spentAmount,
+            RemainingAmount = remainingAmount,
+            PercentageConsumed = percentageConsumed,
+            AlertThreshold = alertThreshold,
+            IsExceeded = isExceeded
+        };
+    }
+
     private void ValidateBudgetRules(decimal amount, int month, int year)
     {
         if (amount <= 0)
@@ -112,9 +164,9 @@ public class BudgetService
             throw new ArgumentException("El mes debe estar entre 1 y 12.");
         }
 
-        if (year <= 0)
+        if (year < 1 || year > 9999)
         {
-            throw new ArgumentException("El año debe ser mayor a cero.");
+            throw new ArgumentException("El año debe estar entre 1 y 9999.");
         }
     }
 

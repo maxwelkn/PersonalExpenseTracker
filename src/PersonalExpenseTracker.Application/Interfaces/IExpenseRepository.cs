@@ -14,4 +14,5 @@ public interface IExpenseRepository
     Task DeleteAsync(int id);
     Task<bool> HasExpensesByCategoryIdAsync(int categoryId);
     Task<bool> HasExpensesByPaymentMethodIdAsync(int paymentMethodId);
+    Task<decimal> GetTotalByUserCategoryPeriodAsync(int userId, int categoryId, int year, int month);
 }

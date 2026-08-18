@@ -1,8 +1,7 @@
-namespace PersonalExpenseTracker.Application.DTOs;
+namespace PersonalExpenseTracker.Application.DTOs.Budget;
 
-public class BudgetResponseDto
+public class UpdateBudgetDto
 {
-    public int Id { get; set; }
     public decimal Amount { get; set; }
     public int Month { get; set; }
     public int Year { get; set; }
