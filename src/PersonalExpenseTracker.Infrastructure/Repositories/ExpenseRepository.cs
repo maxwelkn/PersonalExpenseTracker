@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalExpenseTracker.Application.DTOs.Expense;
 using PersonalExpenseTracker.Application.Interfaces;
 using PersonalExpenseTracker.Domain.Entities;
 using PersonalExpenseTracker.Infrastructure.Persistence;
@@ -65,5 +66,31 @@ public class ExpenseRepository : IExpenseRepository
     public async Task<bool> HasExpensesByPaymentMethodIdAsync(int paymentMethodId)
     {
         return await _context.Expenses.AnyAsync(e => e.PaymentMethodId == paymentMethodId);
+    }
+
+    public async Task<decimal> GetTotalByUserCategoryPeriodAsync(int userId, int categoryId, int year, int month)
+    {
+        var startDate = new System.DateTime(year, month, 1);
+        var endDate = startDate.AddMonths(1);
+
+        return await _context.Expenses
+            .Where(e => e.UserId == userId && e.CategoryId == categoryId && e.Date >= startDate && e.Date < endDate)
+            .SumAsync(e => e.Amount);
+    }
+
+    public async Task<IEnumerable<CategoryExpenseTotalDto>> GetTotalsByUserPeriodGroupedByCategoryAsync(int userId, int year, int month)
+    {
+        var startDate = new System.DateTime(year, month, 1);
+        var endDate = startDate.AddMonths(1);
+
+        return await _context.Expenses
+            .Where(e => e.UserId == userId && e.Date >= startDate && e.Date < endDate)
+            .GroupBy(e => e.CategoryId)
+            .Select(g => new CategoryExpenseTotalDto
+            {
+                CategoryId = g.Key,
+                TotalAmount = g.Sum(e => e.Amount)
+            })
+            .ToListAsync();
     }
 }
