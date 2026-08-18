@@ -26,6 +26,11 @@ namespace PersonalExpenseTracker.API.ExceptionHandling
                     problemDetails.Title = "Bad Request";
                     problemDetails.Detail = argumentException.Message;
                     break;
+                case FormatException formatException:
+                    problemDetails.Status = StatusCodes.Status400BadRequest;
+                    problemDetails.Title = "Bad Request";
+                    problemDetails.Detail = formatException.Message;
+                    break;
                 case InvalidOperationException invalidOperationException:
                     problemDetails.Status = StatusCodes.Status409Conflict;
                     problemDetails.Title = "Conflict";

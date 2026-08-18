@@ -9,6 +9,7 @@ public interface IExpenseRepository
     Task<Expense?> GetByIdAsync(int id);
     Task<IEnumerable<Expense>> GetAllByUserIdAsync(int userId);
     Task AddAsync(Expense expense);
+    Task AddRangeAsync(IEnumerable<Expense> expenses);
     Task UpdateAsync(Expense expense);
     Task DeleteAsync(int id);
     Task<bool> HasExpensesByCategoryIdAsync(int categoryId);
