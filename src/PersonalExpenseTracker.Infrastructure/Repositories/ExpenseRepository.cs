@@ -55,4 +55,9 @@ public class ExpenseRepository : IExpenseRepository
     {
         return await _context.Expenses.AnyAsync(e => e.CategoryId == categoryId);
     }
+
+    public async Task<bool> HasExpensesByPaymentMethodIdAsync(int paymentMethodId)
+    {
+        return await _context.Expenses.AnyAsync(e => e.PaymentMethodId == paymentMethodId);
+    }
 }

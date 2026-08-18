@@ -7,10 +7,12 @@ namespace PersonalExpenseTracker.Application.Services
     public class PaymentMethodService
     {
         private readonly IPaymentMethodRepository _paymentMethodRepository;
+        private readonly IExpenseRepository _expenseRepository;
 
-        public PaymentMethodService(IPaymentMethodRepository paymentMethodRepository)
+        public PaymentMethodService(IPaymentMethodRepository paymentMethodRepository, IExpenseRepository expenseRepository)
         {
             _paymentMethodRepository = paymentMethodRepository;
+            _expenseRepository = expenseRepository;
         }
 
         public async Task<PaymentMethodResponseDto> CreatePaymentMethodAsync(CreatePaymentMethodDto dto, int userId)
@@ -110,6 +112,11 @@ namespace PersonalExpenseTracker.Application.Services
             if (paymentMethod == null || paymentMethod.UserId != userId)
             {
                 return false;
+            }
+
+            if (await _expenseRepository.HasExpensesByPaymentMethodIdAsync(id))
+            {
+                throw new InvalidOperationException("El método de pago no puede eliminarse mientras tenga gastos asociados.");
             }
 
             await _paymentMethodRepository.DeleteAsync(id);
