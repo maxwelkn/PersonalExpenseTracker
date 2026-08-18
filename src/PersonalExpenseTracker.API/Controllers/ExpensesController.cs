@@ -12,10 +12,12 @@ namespace PersonalExpenseTracker.API.Controllers
     public class ExpensesController : ControllerBase
     {
         private readonly ExpenseService _expenseService;
+        private readonly ExpenseImportService _expenseImportService;
 
-        public ExpensesController(ExpenseService expenseService)
+        public ExpensesController(ExpenseService expenseService, ExpenseImportService expenseImportService)
         {
             _expenseService = expenseService;
+            _expenseImportService = expenseImportService;
         }
 
         private int GetUserId()
@@ -79,6 +81,26 @@ namespace PersonalExpenseTracker.API.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportExpenses(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                throw new ArgumentException("Debe proporcionar un archivo válido.");
+            }
+
+            var extension = System.IO.Path.GetExtension(file.FileName);
+            if (!string.Equals(extension, ".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("El archivo debe tener la extensión .xlsx.");
+            }
+
+            using var stream = file.OpenReadStream();
+            var result = await _expenseImportService.ImportExpensesAsync(stream, GetUserId());
+
+            return Ok(result);
         }
     }
 }
