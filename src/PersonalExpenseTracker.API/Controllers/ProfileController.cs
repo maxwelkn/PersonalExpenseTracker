@@ -51,5 +51,17 @@ namespace PersonalExpenseTracker.API.Controllers
 
             return Ok(updatedProfile);
         }
+
+        [HttpPut("password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] ChangePasswordDto dto)
+        {
+            var success = await _profileService.ChangePasswordAsync(GetUserId(), dto);
+            if (!success)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }
