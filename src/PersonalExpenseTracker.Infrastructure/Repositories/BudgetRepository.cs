@@ -56,4 +56,9 @@ public class BudgetRepository : IBudgetRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> HasBudgetsByCategoryIdAsync(int categoryId)
+    {
+        return await _context.Budgets.AnyAsync(b => b.CategoryId == categoryId);
+    }
 }
