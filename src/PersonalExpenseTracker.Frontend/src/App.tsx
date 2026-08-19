@@ -9,6 +9,7 @@ import { Budgets } from './pages/Budgets';
 import { Reports } from './pages/Reports';
 import { Categories } from './pages/Categories';
 import { PaymentMethods } from './pages/PaymentMethods';
+import { Profile } from './pages/Profile';
 import { Layout } from './layouts/Layout';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -35,6 +36,7 @@ function App() {
           <Route path="reports" element={<Reports />} />
           <Route path="categories" element={<Categories />} />
           <Route path="payment-methods" element={<PaymentMethods />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </Router>

@@ -102,7 +102,7 @@ export const Reports = () => {
           <label className="label mb-0 text-xs">Month</label>
           <select className="input h-9 py-1" value={month} onChange={e => setMonth(Number(e.target.value))}>
             {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-              <option key={m} value={m}>{new Date(0, m - 1).toLocaleString('default', { month: 'long' })}</option>
+              <option key={m} value={m}>{new Date(0, m - 1).toLocaleString('en-US', { month: 'long' })}</option>
             ))}
           </select>
         </div>
@@ -132,7 +132,7 @@ export const Reports = () => {
         <div className="card p-12 text-center text-slate-500 flex flex-col items-center">
           <BarChart2 className="w-16 h-16 text-slate-300 mb-4" />
           <h3 className="text-lg font-medium text-slate-900 mb-1">No report data for this period</h3>
-          <p>There are no expenses recorded for {new Date(0, month - 1).toLocaleString('default', { month: 'long' })} {year}.</p>
+          <p>There are no expenses recorded for {new Date(0, month - 1).toLocaleString('en-US', { month: 'long' })} {year}.</p>
         </div>
       ) : (
         <>

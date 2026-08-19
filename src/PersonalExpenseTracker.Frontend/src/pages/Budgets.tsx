@@ -177,7 +177,7 @@ export const Budgets = () => {
           <label className="label mb-0 text-xs">Month</label>
           <select className="input h-9 py-1" value={month} onChange={e => setMonth(Number(e.target.value))}>
             {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-              <option key={m} value={m}>{new Date(0, m - 1).toLocaleString('default', { month: 'long' })}</option>
+              <option key={m} value={m}>{new Date(0, m - 1).toLocaleString('en-US', { month: 'long' })}</option>
             ))}
           </select>
         </div>
@@ -233,7 +233,7 @@ export const Budgets = () => {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
             <h3 className="text-lg font-bold mb-4">{currentBudget ? 'Edit Budget' : 'New Budget'}</h3>
             <p className="text-sm text-slate-500 mb-4">
-              Setting budget for {new Date(0, month - 1).toLocaleString('default', { month: 'long' })} {year}
+              Setting budget for {new Date(0, month - 1).toLocaleString('en-US', { month: 'long' })} {year}
             </p>
             <form onSubmit={handleSave} className="space-y-4">
               <div>
