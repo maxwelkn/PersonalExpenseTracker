@@ -84,6 +84,6 @@ export interface ImportResult {
 
 export interface ImportError {
   rowNumber: number;
-  fieldName: string;
-  errorMessage: string;
+  field: string;
+  message: string;
 }

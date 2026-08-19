@@ -430,8 +430,8 @@ export const Expenses = () => {
                             {importResult.errors.map((err, i) => (
                               <tr key={i}>
                                 <td className="px-4 py-2 font-medium">{err.rowNumber}</td>
-                                <td className="px-4 py-2 text-slate-600">{err.fieldName}</td>
-                                <td className="px-4 py-2 text-danger">{err.errorMessage}</td>
+                                <td className="px-4 py-2 text-slate-600">{err.field}</td>
+                                <td className="px-4 py-2 text-danger">{err.message}</td>
                               </tr>
                             ))}
                           </tbody>
